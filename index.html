@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#212428" />
+
+    <!-- Fonts: self-hosted Clash Display (headings) + Satoshi (body). @font-face
+         lives in the stylesheet; preload the two faces needed for first paint —
+         the hero name (Clash 700) and primary body copy (Satoshi 400). -->
+    <link rel="preload" href="/fonts/clash-700.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/satoshi-400.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- Primary meta. %SITE_URL% is replaced at build time from VITE_SITE_URL
+         (see vite.config.ts) — set that one env var to fix every URL below. -->
+    <title>Ashish | Software Engineer</title>
+    <meta
+      name="description"
+      content="Ashish - Software Engineer building reliable, high-performance web applications with React, TypeScript and Node.js."
+    />
+    <meta name="author" content="Ashish" />
+    <link rel="canonical" href="%SITE_URL%/" />
+
+    <!-- Open Graph (LinkedIn, Slack, Facebook) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Ashish | Software Engineer" />
+    <meta
+      property="og:description"
+      content="Software Engineer building reliable, high-performance web applications."
+    />
+    <meta property="og:url" content="%SITE_URL%/" />
+    <meta property="og:image" content="%SITE_URL%/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Ashish — Software Engineer" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Ashish | Software Engineer" />
+    <meta
+      name="twitter:description"
+      content="Software Engineer building reliable, high-performance web applications."
+    />
+    <meta name="twitter:image" content="%SITE_URL%/og.png" />
+
+    <!-- Structured data: Person (helps Google's knowledge panel + rich results) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Ashish",
+        "jobTitle": "Software Engineer",
+        "url": "%SITE_URL%/",
+        "image": "%SITE_URL%/og.png",
+        "email": "mailto:at.best.ashish@gmail.com",
+        "sameAs": [
+          "https://github.com/NkajNegi",
+          "https://www.linkedin.com/in/ashish-negi-security/"
+        ],
+        "knowsAbout": ["React", "TypeScript", "Node.js", "PostgreSQL", "DevOps", "Web Performance"]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

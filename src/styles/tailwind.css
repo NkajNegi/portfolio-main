@@ -1,0 +1,510 @@
+@import 'tailwindcss';
+
+/* ── Self-hosted, subset fonts ───────────────────────────────────────────────
+   Served locally from /public/fonts (no render-blocking third-party request,
+   no privacy leak). Only the weights actually used are shipped: Clash Display
+   600/700 for headings, Satoshi 400/500/700/900 for body + wordmarks.
+   `font-display: swap` paints text immediately in the fallback, then swaps. */
+@font-face {
+  font-family: 'Clash Display';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/clash-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Clash Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/clash-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Satoshi';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/satoshi-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Satoshi';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/satoshi-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Satoshi';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/satoshi-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Satoshi';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('/fonts/satoshi-900.woff2') format('woff2');
+}
+
+/* ── Design tokens exposed to Tailwind (v4 `@theme`) ─────────────────────────
+   Fonts, a fluid modular type scale, and a 3-step radius scale. Defining these
+   here means every heading and card pulls from one source of truth instead of
+   ad-hoc `clamp()` and `rounded-[Npx]` values scattered across components. */
+@theme {
+  --font-display:
+    'Clash Display', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-sans:
+    'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Fluid type scale (≈1.25 major-third at desktop caps). Each step ships its
+     own line-height so headings stay tight without per-use overrides.
+     Utilities generated: text-display / text-h1 / text-h2 / text-h3 / text-lead. */
+  --text-display: clamp(3.75rem, 12vw, 8.25rem);
+  --text-display--line-height: 0.85;
+  --text-h1: clamp(2.75rem, 8vw, 6rem);
+  --text-h1--line-height: 0.95;
+  --text-h2: clamp(2.25rem, 6vw, 4rem);
+  --text-h2--line-height: 1.05;
+  --text-h3: clamp(1.875rem, 5vw, 3rem);
+  --text-h3--line-height: 1.1;
+  --text-lead: clamp(1.125rem, 2.2vw, 1.5rem);
+  --text-lead--line-height: 1.35;
+
+  /* Radius scale. Utilities generated: rounded-control / rounded-card / rounded-hero. */
+  --radius-control: 0.875rem; /* 14px — buttons, toggles, small controls */
+  --radius-card: 1.75rem; /*    28px — cards, panels, list items */
+  --radius-hero: 2.75rem; /*    44px — large feature panels */
+}
+
+/* ── Theme tokens ────────────────────────────────────────────────────────────
+   One elevation/surface model shared by both themes: same variable names, same
+   roles — only the values change between dark and light. No separate
+   neumorphic language, no shadow-only edges. */
+:root {
+  --bg: #212428;
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.68);
+
+  /* Surfaces: a faint fill + a real (visible) border + one soft elevation shadow. */
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-hover: rgba(255, 255, 255, 0.09);
+  --surface-border: rgba(255, 255, 255, 0.09);
+  --surface-border-hover: rgba(255, 255, 255, 0.18);
+  --surface-blur: blur(12px);
+  --elevation: 0 8px 28px -10px rgba(0, 0, 0, 0.55);
+  --elevation-lifted: 0 18px 44px -14px rgba(0, 0, 0, 0.65);
+
+  /* Accents: one primary (cyan) + one supporting hue (violet). Nothing else. */
+  --brand: #a855f7; /*   violet — supporting, used only in the signature gradient */
+  --brand-2: #06b6d4; /* cyan   — primary interactive accent */
+  --on-accent: #ffffff; /* text/icon color on a solid --brand-2 fill */
+
+  /* The single signature gradient. Change it here → it changes everywhere. */
+  --accent-gradient: linear-gradient(135deg, #a78bfa 0%, #e879f9 50%, #67e8f9 100%);
+
+  color-scheme: dark;
+}
+
+.light {
+  --bg: #eceff4;
+  --text: #1b1e23;
+  --text-muted: #545b66;
+
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-hover: rgba(255, 255, 255, 0.92);
+  --surface-border: rgba(20, 24, 33, 0.08);
+  --surface-border-hover: rgba(20, 24, 33, 0.16);
+  --surface-blur: blur(12px);
+  --elevation: 0 8px 28px -10px rgba(20, 24, 33, 0.14);
+  --elevation-lifted: 0 18px 44px -14px rgba(20, 24, 33, 0.2);
+
+  /* Deeper cyan so the accent stays legible as text and as a fill on light. */
+  --brand: #7c3aed;
+  --brand-2: #0e7490;
+  --on-accent: #ffffff;
+
+  --accent-gradient: linear-gradient(135deg, #7c3aed 0%, #c026d3 50%, #0891b2 100%);
+
+  color-scheme: light;
+}
+
+@layer base {
+  html,
+  body {
+    background: var(--bg);
+  }
+
+  /* Single-page site navigated by in-page anchors — smooth scroll makes those
+     jumps feel intentional; scroll-padding keeps targets clear of the top edge.
+     (Reduced-motion block below resets scroll-behavior to auto.) */
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Headings lead with the expressive display face by default. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    /* Clash Display ships an unusually narrow space glyph — widen word gaps
+       so multi-word headings don't read as one run-together word. */
+    word-spacing: 0.18em;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition:
+      color 0.2s ease,
+      opacity 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  /* Brand-tinted text selection — a small but universal craft detail. */
+  ::selection {
+    background: color-mix(in srgb, var(--brand-2) 30%, transparent);
+    color: var(--text);
+  }
+
+  img,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  /* Softer, on-brand focus ring: a crisp outline plus a subtle glow so it
+     reads as designed rather than a default browser box, while staying
+     clearly visible for keyboard users. */
+  :focus-visible {
+    outline: 2px solid var(--brand-2);
+    outline-offset: 3px;
+    border-radius: 4px;
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-2) 22%, transparent);
+  }
+
+  /* Theme toggle uses a custom radial wipe (see useTheme.ts) — turn off the
+     browser's default view-transition cross-fade so only the circle animates. */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+}
+
+@layer utilities {
+  /* ── The one surface primitive ─────────────────────────────────────────────
+     Soft-glass card: faint fill, subtle border, single soft elevation shadow,
+     light backdrop blur. Hover lifts it; the border/shadow do the edge work
+     (no shadow-only neumorphic edges). Used for every card, pill, and panel. */
+  .surface {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    box-shadow: var(--elevation);
+    backdrop-filter: var(--surface-blur);
+    -webkit-backdrop-filter: var(--surface-blur);
+    transition:
+      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .surface:hover {
+    box-shadow: var(--elevation-lifted);
+    border-color: var(--surface-border-hover);
+    transform: translateY(-2px);
+  }
+
+  .surface:active {
+    transform: translateY(0);
+  }
+
+  /* Ghost/translucent control that fills on hover — for secondary buttons. */
+  .glass-button {
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    backdrop-filter: var(--surface-blur);
+    -webkit-backdrop-filter: var(--surface-blur);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass-button:hover {
+    background: var(--surface-hover);
+    border-color: var(--surface-border-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--elevation);
+  }
+
+  /* Solid primary action — one accent doing the "look here" work. */
+  .btn-accent {
+    background: var(--brand-2);
+    color: var(--on-accent);
+    box-shadow: 0 10px 30px -10px color-mix(in srgb, var(--brand-2) 70%, transparent);
+    transition:
+      transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-accent:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 44px -12px color-mix(in srgb, var(--brand-2) 80%, transparent);
+  }
+
+  .btn-accent:active {
+    transform: translateY(0);
+  }
+
+  /* The signature gradient as clipped text. Pairs with animate-gradient-text
+     for the slow hue drift. Single source: --accent-gradient. */
+  .text-gradient {
+    background-image: var(--accent-gradient);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* Sliding underline for text links (nav, footer, inline prose links). */
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .link-underline:hover,
+  .link-underline:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  /* Outlined display type. Used sparingly — one heading word and the ghost
+     section numerals — so it stays a flourish, not a pattern. */
+  .text-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--text) 40%, transparent);
+  }
+
+  /* Elevated full-bleed band: breaks the long single page into chapters.
+     color-mix with --text flips automatically — slightly lighter on dark,
+     slightly darker on light. */
+  .section-band {
+    background: color-mix(in srgb, var(--text) 3%, transparent);
+    border-top: 1px solid var(--surface-border);
+    border-bottom: 1px solid var(--surface-border);
+  }
+
+  /* Standard vertical rhythm for page sections (replaces py-20 sm:py-28 lg:py-32). */
+  .section-py {
+    padding-block: 5rem;
+  }
+
+  @media (min-width: 640px) {
+    .section-py {
+      padding-block: 7rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .section-py {
+      padding-block: 8rem;
+    }
+  }
+
+  /* Single slow marquee (the blog strip); pauses on hover via .hover-pause. */
+  @keyframes scroll-left {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .animate-scroll-left {
+    animation: scroll-left 120s linear infinite;
+  }
+
+  .hover-pause:hover {
+    animation-play-state: paused;
+  }
+
+  /* Ambient two-hue wash (violet + cyan). Painted on the AmbientBackground's
+     position:fixed layer instead of `background-attachment: fixed` on <body> —
+     a fixed-positioned compositing layer doesn't force a full repaint on every
+     scroll frame the way a fixed background attachment does. */
+  .ambient-wash {
+    background-image:
+      radial-gradient(at 0% 0%, rgba(168, 85, 247, 0.22) 0, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.18) 0, transparent 50%);
+  }
+
+  .light .ambient-wash {
+    background-image:
+      radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.1) 0, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(14, 116, 144, 0.08) 0, transparent 50%);
+  }
+
+  /* Film-grain overlay: subtle SVG noise for a premium textured feel.
+     Very low opacity — texture, not visible static. */
+  .grain {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  /* Slow hue drift for gradient text accents (e.g. the hero's "."). */
+  @keyframes gradient-drift {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .animate-gradient-text {
+    background-size: 250% 250%;
+    animation: gradient-drift 6s ease-in-out infinite;
+  }
+
+  .pixelated {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  @keyframes app-fade-out {
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  @keyframes app-h-in {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  @keyframes app-v-in {
+    to {
+      transform: scaleY(1);
+    }
+  }
+
+  @keyframes app-weave {
+    0%,
+    100% {
+      transform: translateY(-8px);
+      opacity: 0.25;
+    }
+    50% {
+      transform: translateY(8px);
+      opacity: 0.55;
+    }
+  }
+
+  @keyframes app-float-a {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) rotate(-2deg);
+    }
+    50% {
+      transform: translate3d(8px, -10px, 0) rotate(1deg);
+    }
+  }
+
+  @keyframes app-float-b {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) rotate(2deg);
+    }
+    50% {
+      transform: translate3d(-10px, 8px, 0) rotate(-1deg);
+    }
+  }
+
+  @keyframes app-float-c {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) rotate(1deg);
+    }
+    50% {
+      transform: translate3d(10px, -6px, 0) rotate(-2deg);
+    }
+  }
+
+  @keyframes app-blink {
+    0%,
+    100% {
+      opacity: 0.55;
+      transform: scale(0.95);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
+/* ── Scrollbar: slim, on-brand, always visible ───────────────────────────────
+   The page is one very long scroll; the bar is the primary position/length
+   affordance, so it stays visible (just restyled) rather than hidden. */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--brand-2) 45%, transparent) transparent;
+}
+
+html::-webkit-scrollbar {
+  width: 10px;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--brand-2) 45%, transparent);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--brand-2) 70%, transparent);
+  background-clip: content-box;
+}
+
+/* ── Mobile: lighten the big decorative gradient wash for performance ──────── */
+@media (max-width: 767px) {
+  .ambient-wash {
+    background-image:
+      radial-gradient(at 0% 0%, rgba(168, 85, 247, 0.13) 0, transparent 45%),
+      radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.1) 0, transparent 45%);
+  }
+
+  .light .ambient-wash {
+    background-image:
+      radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.07) 0, transparent 45%),
+      radial-gradient(at 100% 100%, rgba(14, 116, 144, 0.05) 0, transparent 45%);
+  }
+}
+
+/* ── Respect users who prefer reduced motion ───────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
