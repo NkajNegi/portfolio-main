@@ -1,10 +1,11 @@
-import { motion } from 'framer-motion'
 import { Cloud, Cpu, Globe, Layout } from 'lucide-react'
 
+import { LogoLoop } from '@/components/effects/LogoLoop'
 import { Container } from '@/components/layout/Container'
 import { SectionNumeral } from '@/components/layout/SectionNumeral'
 import { MaskReveal } from '@/components/motion/MaskReveal'
 import { Reveal } from '@/components/motion/Reveal'
+import { TiltCard } from '@/components/motion/TiltCard'
 import { DURATION, EASE } from '@/lib/motion'
 
 const skillGroups = [
@@ -50,9 +51,12 @@ export function SkillsSection() {
   return (
     <section
       id="skills"
-      className="section-py section-band relative z-10 scroll-mt-24 pb-28 lg:pb-40"
+      className="section-py section-band relative z-10 scroll-mt-24 overflow-hidden pb-28 lg:pb-40"
       aria-label="Skills & Expertise"
     >
+      {/* Tech-logo marquee, sitting behind the bento on the band background. */}
+      <LogoLoop />
+
       <Container className="relative z-10">
         <div className="relative mb-16 flex flex-col items-start gap-4">
           <SectionNumeral n="04" />
@@ -80,14 +84,13 @@ export function SkillsSection() {
             for their headings ("Infrastructure" clipped at the card edge). */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
           {skillGroups.map((group, i) => (
-            <motion.div
+            <TiltCard
               key={group.title}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{ delay: i * 0.08, duration: DURATION.base, ease: EASE }}
-              whileHover={{ y: -6 }}
-              className={['surface group relative overflow-hidden rounded-card sm:rounded-hero p-6 sm:p-10', group.className].join(
+              className={['surface group overflow-hidden rounded-card sm:rounded-hero p-6 sm:p-10', group.className].join(
                 ' ',
               )}
             >
@@ -134,7 +137,7 @@ export function SkillsSection() {
                   ))}
                 </div>
               </div>
-            </motion.div>
+            </TiltCard>
           ))}
         </div>
 

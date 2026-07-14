@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { useTheme } from '@/app/useTheme'
+import { TiltCard } from '@/components/motion/TiltCard'
 import { site } from '@/content/site'
 
 type Entry = { command?: string; lines: ReactNode[] }
@@ -132,7 +133,10 @@ export function HeroTerminal() {
   }
 
   return (
-    <div
+    <TiltCard
+      maxTilt={4}
+      cardScale={1.01}
+      glare={false}
       className="surface w-full overflow-hidden rounded-card border-none bg-black/30 text-left shadow-2xl backdrop-blur-xl"
       onClick={() => inputRef.current?.focus()}
     >
@@ -182,6 +186,6 @@ export function HeroTerminal() {
           />
         </form>
       </div>
-    </div>
+    </TiltCard>
   )
 }

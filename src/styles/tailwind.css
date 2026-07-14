@@ -249,14 +249,38 @@
     box-shadow: var(--elevation);
   }
 
-  /* Solid primary action — one accent doing the "look here" work. */
+  /* Solid primary action — one accent doing the "look here" work. Clips a
+     specular sheen (::before) that sweeps across on hover, giving the solid
+     buttons a physical, glassy glint next to the surrounding surfaces. */
   .btn-accent {
+    position: relative;
+    overflow: hidden;
     background: var(--brand-2);
     color: var(--on-accent);
     box-shadow: 0 10px 30px -10px color-mix(in srgb, var(--brand-2) 70%, transparent);
     transition:
       transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
       box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-accent::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      115deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.35) 48%,
+      rgba(255, 255, 255, 0.35) 52%,
+      transparent 70%
+    );
+    transform: translateX(-120%);
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-accent:hover::before {
+    transform: translateX(120%);
   }
 
   .btn-accent:hover {
@@ -326,17 +350,42 @@
     }
   }
 
-  /* Single slow marquee (the blog strip); pauses on hover via .hover-pause. */
+  /* Marquees: the blog strip (one row) and the Skills logo loop (alternating
+     rows). Two directions so adjacent rows counter-scroll. */
   @keyframes scroll-left {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
+  }
+
+  @keyframes scroll-right {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
   }
 
   .animate-scroll-left {
     animation: scroll-left 120s linear infinite;
   }
 
+  .animate-scroll-right {
+    animation: scroll-right 120s linear infinite;
+  }
+
   .hover-pause:hover {
+    animation-play-state: paused;
+  }
+
+  /* Horizontal edge-fade for marquees — content dissolves into the section
+     instead of hitting a hard clip at the container edge. */
+  .marquee-edge-fade {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  /* Off-screen pause: JS adds .marquee-paused to the loop's root when its
+     section scrolls out of view (IntersectionObserver), so idle rows cost
+     nothing. */
+  .marquee-paused .animate-scroll-left,
+  .marquee-paused .animate-scroll-right {
     animation-play-state: paused;
   }
 

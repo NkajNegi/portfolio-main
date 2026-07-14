@@ -1,3 +1,4 @@
+import { TiltCard } from '@/components/motion/TiltCard'
 import type { BlogPost } from '@/content/site'
 
 type BlogCardProps = {
@@ -8,12 +9,13 @@ type BlogCardProps = {
 
 export function BlogCard({ post, brandColorClass, hoverBorderClass }: BlogCardProps) {
   return (
-    <a
-      href={post.href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`surface group/card relative flex w-[320px] shrink-0 flex-col gap-4 rounded-card p-8 hover:bg-[color:var(--surface)] ${hoverBorderClass}`}
-    >
+    <TiltCard maxTilt={6} className="w-[320px] shrink-0 rounded-card">
+      <a
+        href={post.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`surface group/card relative flex w-full flex-col gap-4 rounded-card p-8 hover:bg-[color:var(--surface)] ${hoverBorderClass}`}
+      >
       {/* Background to separate from page background animations */}
       <div className="absolute inset-0 -z-10 rounded-card bg-[color:var(--bg)] opacity-90 backdrop-blur-3xl" />
 
@@ -37,6 +39,7 @@ export function BlogCard({ post, brandColorClass, hoverBorderClass }: BlogCardPr
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
       </div>
-    </a>
+      </a>
+    </TiltCard>
   )
 }

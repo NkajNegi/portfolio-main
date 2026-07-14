@@ -1,18 +1,15 @@
 import { motion } from 'framer-motion'
 
-import { HeroGradient } from '@/components/hero/HeroGradient'
 import { HeroTerminal } from '@/components/hero/HeroTerminal'
 import { Container } from '@/components/layout/Container'
 import { Magnetic } from '@/components/motion/Magnetic'
 import { ScrambleText } from '@/components/motion/ScrambleText'
-import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import { site } from '@/content/site'
 
 export function WelcomeSection() {
   return (
-    <section className="relative h-[100svh] w-full overflow-hidden" aria-label="Welcome">
-      {/* Flowing mesh-gradient backdrop */}
-      <HeroGradient className="z-0" />
+    <section className="relative min-h-[100svh] w-full overflow-hidden bg-transparent" aria-label="Welcome">
+      {/* The HeroGradient is removed/hidden to allow the 3D BridgeModel to act as the background */}
 
       {/*
         This wrapper ensures all absolute elements (Decorative tags, ThemeToggle, Scroll indicator)
@@ -20,9 +17,6 @@ export function WelcomeSection() {
       */}
       <div className="absolute inset-0 z-20 pointer-events-none">
         <Container className="relative h-full">
-          {/* Theme Toggle - top-left corner, opposite the nav menu (top-right) so they never collide */}
-          <ThemeToggle className="pointer-events-auto absolute left-0 top-6 z-30 md:top-8" />
-
           {/* Scroll affordance: a soft-bouncing down-chevron over a fading line.
               The arrow carries the "keep scrolling" meaning on its own — no label. */}
           <motion.a
