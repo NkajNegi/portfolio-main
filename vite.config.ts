@@ -4,6 +4,8 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
 
+import { cloudflare } from "@cloudflare/vite-plugin";
+
 // Single source of truth for the deployed origin. Set VITE_SITE_URL in your host
 // (Vercel/Netlify env or a local .env) and every canonical / OG / Twitter / JSON-LD
 // URL in index.html is filled from it — no scattered `your-domain.com` to miss.
@@ -47,7 +49,7 @@ function siteUrl(): Plugin {
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [tailwindcss(), react(), siteUrl()],
+  plugins: [tailwindcss(), react(), siteUrl(), cloudflare()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
