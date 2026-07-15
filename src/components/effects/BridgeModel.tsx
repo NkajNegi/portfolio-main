@@ -34,7 +34,7 @@ const keyframes = [
 const currentQuat = new THREE.Quaternion()
 
 function Model() {
-  const { scene } = useGLTF('/baker_and_the_bridge.glb')
+  const { scene } = useGLTF('/baker_compressed.glb')
   const group = useRef<THREE.Group>(null)
 
   // Track the native page scroll
@@ -109,4 +109,4 @@ export function BridgeModel() {
   )
 }
 
-useGLTF.preload('/baker_and_the_bridge.glb')
+useGLTF.preload('/baker_compressed.glb')
